@@ -1,0 +1,33 @@
+services:
+  # nginx
+  web:
+    image: nginx:latest
+    ports:
+      - "8082:80"
+    volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+  # php
+  app:
+    build:
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - /var/www/html/vendor
+      - ./app:/var/www/html
+  # mysql
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "33063:3306"
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_USER: root
+      MYSQL_USER: mts_user
+      MYSQL_PASSWORD: mts_secret
+      MYSQL_DATABASE: mts
+  # redis
+
+volumes:
+  mysqldata:
